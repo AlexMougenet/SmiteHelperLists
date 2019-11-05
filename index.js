@@ -19,10 +19,7 @@ const languages = {
   de: '2',
   fr: '3',
   es: '7',
-  pt: '10',
-  ru: '11',
-  pl: '12',
-  tr: '13'
+  pt: '10'
 };
 
 const queues = {
@@ -40,8 +37,8 @@ const queues = {
 
 /////////////////////// LOGIC ///////////////////////
 
-writeFile = (dir, lang, ext, content) => {
-  fs.writeFileSync(`${listsDir}/${dir}/${lang}.${ext}`, JSON.stringify(content, null, 2));
+writeFile = (dir, lang, ext, content, shouldStringify) => {
+  fs.writeFileSync(`${listsDir}/${ext}/${dir}/${lang}.${ext}`, shouldStringify ? JSON.stringify(content, null, 2) : content);
 }
 
 writeFile('languages', 'langs', 'json', languages);
@@ -53,11 +50,17 @@ hirez.smite('pc').session.generate().then((sessionId) => {
     const langId = languages[lang];
 
       hirez.smite('pc').getItems(langId).then(items => {
-        writeFile('items', lang, 'json', items);
+        writeFile('items', lang, 'json', items, true);
         console.log(`Items for ${lang} : OK`);
       }).catch(console.log(`Items for ${lang} : KO`));
       hirez.smite('pc').getGods(langId).then(gods => {
-        writeFile('gods', lang, 'json', gods);
+        writeFile('gods', lang, 'json', gods, true);
+        // save in csv
+        godsNames = '';
+        gods.forEach(god => {
+          godsNames += `${god.Name},\n`;
+        });
+        writeFile('gods', lang, 'csv', godsNames);
         console.log((`Gods for ${lang} : OK`));
       }).catch(console.log(`Gods for ${lang} : KO`));
     });
