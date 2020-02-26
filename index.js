@@ -41,7 +41,7 @@ writeFile = (dir, lang, ext, content, shouldStringify) => {
   fs.writeFileSync(`${listsDir}/${ext}/${dir}/${lang}.${ext}`, shouldStringify ? JSON.stringify(content, null, 2) : content);
 }
 
-writeFile('languages', 'langs', 'json', languages);
+// writeFile('languages', 'langs', 'json', JSON.stringify(languages, null, 2));
 
 hirez.smite('pc').session.generate().then((sessionId) => {
   if (sessionId) {
